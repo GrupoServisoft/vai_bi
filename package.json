@@ -1,0 +1,22 @@
+{
+  "name": "vai-bi",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": "24.x"
+  },
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "start": "npm run start:api",
+    "dev:web": "npm run dev --workspace @vai-bi/web",
+    "dev:api": "npm run dev --workspace @vai-bi/api",
+    "build:web": "npm run build --workspace @vai-bi/web",
+    "heroku-postbuild": "npm run build:web",
+    "start:web": "node scripts/serve-web.mjs",
+    "start:api": "npm run start --workspace @vai-bi/api",
+    "import:objectives": "node scripts/import-objectives-from-google-sheet.mjs"
+  }
+}

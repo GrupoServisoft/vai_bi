@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VAI BI - Mockup Comercial v2</title>
+    <style>
+      :root {
+        --vai-red: #e30629;
+        --vai-red-deep: #b90e2f;
+        --vai-ink: #1f2937;
+        --vai-muted: #6b7280;
+        --vai-bg: #f6f7fb;
+        --vai-card: #ffffff;
+        --vai-line: #e5e7eb;
+        --vai-warn: #f59e0b;
+        --vai-good: #14804a;
+        --vai-bad: #b42318;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+        background: linear-gradient(180deg, #fff 0%, #f7f8fc 100%);
+        color: var(--vai-ink);
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 270px 1fr;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        background: linear-gradient(180deg, #fff 0%, #fff7f8 100%);
+        border-right: 1px solid var(--vai-line);
+        padding: 24px 20px;
+      }
+
+      .brand {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        margin-bottom: 28px;
+      }
+
+      .logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 50% 36%, #f0183f 0%, #e30629 68%);
+        position: relative;
+        box-shadow: 0 12px 28px rgba(227, 6, 41, 0.2);
+      }
+
+      .logo::after {
+        content: "VAi";
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-family: Georgia, serif;
+        font-size: 29px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .brand p {
+        margin: 4px 0 0;
+        color: var(--vai-muted);
+        font-size: 13px;
+      }
+
+      .nav-group {
+        margin-bottom: 22px;
+      }
+
+      .nav-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: var(--vai-muted);
+        margin-bottom: 10px;
+      }
+
+      .nav-item {
+        padding: 12px 14px;
+        border-radius: 14px;
+        margin-bottom: 8px;
+        background: #fff;
+        border: 1px solid transparent;
+        font-weight: 600;
+      }
+
+      .nav-item.active {
+        color: var(--vai-red);
+        background: #fff1f4;
+        border-color: #ffd3dc;
+      }
+
+      .content {
+        padding: 24px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, rgba(227, 6, 41, 0.08), rgba(185, 14, 47, 0.04));
+        border: 1px solid #ffd3dc;
+        border-radius: 24px;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1.6fr .9fr;
+        gap: 18px;
+      }
+
+      .hero h2 {
+        margin: 0 0 8px;
+        font-size: 30px;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--vai-muted);
+        line-height: 1.5;
+      }
+
+      .hero-panel {
+        background: rgba(255,255,255,.75);
+        border: 1px solid rgba(255,255,255,.8);
+        border-radius: 20px;
+        padding: 18px;
+      }
+
+      .hero-panel .big {
+        font-size: 36px;
+        font-weight: 800;
+        color: var(--vai-red);
+      }
+
+      .hero-panel .sub {
+        color: var(--vai-muted);
+        font-size: 13px;
+      }
+
+      .toolbar {
+        margin-top: 18px;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .tabs, .filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tab, .chip {
+        padding: 11px 14px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid var(--vai-line);
+        font-size: 14px;
+      }
+
+      .tab.active {
+        background: var(--vai-red);
+        color: #fff;
+        border-color: var(--vai-red);
+        font-weight: 700;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .grid.kpis {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .card {
+        background: var(--vai-card);
+        border: 1px solid var(--vai-line);
+        border-radius: 22px;
+        padding: 18px;
+        box-shadow: 0 16px 32px rgba(15, 23, 42, .04);
+      }
+
+      .card h3, .card h4 {
+        margin: 0 0 8px;
+      }
+
+      .metric-label {
+        color: var(--vai-muted);
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      .metric-value {
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+
+      .metric-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        color: var(--vai-muted);
+        font-size: 13px;
+      }
+
+      .pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 12px;
+      }
+
+      .good { background: #e9f8ef; color: var(--vai-good); }
+      .warn { background: #fff6dd; color: var(--vai-warn); }
+      .bad { background: #fdecec; color: var(--vai-bad); }
+      .info { background: #eef2ff; color: #4f46e5; }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 16px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: 1.1fr 1.1fr .8fr;
+        gap: 16px;
+      }
+
+      .chart {
+        margin-top: 14px;
+        border-radius: 16px;
+        padding: 14px;
+        background: #fbfbfd;
+        border: 1px dashed #d7dce5;
+        min-height: 250px;
+        position: relative;
+      }
+
+      .chart.tall { min-height: 290px; }
+
+      .chart-title {
+        font-size: 13px;
+        color: var(--vai-muted);
+        margin-bottom: 14px;
+      }
+
+      .bars, .stacked {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 38px;
+        top: 48px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-end;
+      }
+
+      .bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        height: 100%;
+      }
+
+      .bar-pair {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        height: 100%;
+      }
+
+      .bar {
+        flex: 1;
+        border-radius: 12px 12px 4px 4px;
+        min-height: 8px;
+      }
+
+      .bar.real { background: linear-gradient(180deg, #f0183f, #e30629); }
+      .bar.target { background: #f8c457; }
+      .bar.compare { background: #374151; }
+      .bar-line {
+        width: 100%;
+        height: 3px;
+        background: var(--vai-red-deep);
+        margin-top: -8px;
+        border-radius: 999px;
+      }
+
+      .month {
+        font-size: 12px;
+        color: var(--vai-muted);
+      }
+
+      .stack-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        height: 100%;
+      }
+
+      .segment {
+        width: 100%;
+      }
+
+      .seg-pending { background: #f59e0b; }
+      .seg-resolved { background: #14804a; }
+      .seg-progress { background: #2563eb; }
+      .seg-follow { background: #b90e2f; }
+      .seg-escalated { background: #7c3aed; }
+      .seg-postponed { background: #6b7280; }
+
+      .legend {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        color: var(--vai-muted);
+        font-size: 12px;
+      }
+
+      .legend span::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+      }
+
+      .lg-real::before { background: var(--vai-red); }
+      .lg-target::before { background: #f8c457; }
+      .lg-compare::before { background: #374151; }
+      .lg-pending::before { background: #f59e0b; }
+      .lg-resolved::before { background: #14804a; }
+      .lg-progress::before { background: #2563eb; }
+      .lg-follow::before { background: #b90e2f; }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      th, td {
+        text-align: left;
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--vai-line);
+        white-space: nowrap;
+      }
+
+      th {
+        color: var(--vai-muted);
+        font-weight: 700;
+        background: #fbfbfd;
+        position: sticky;
+        top: 0;
+      }
+
+      .table-toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 12px 0 14px;
+      }
+
+      .filter {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--vai-line);
+        background: #fff;
+        min-width: 140px;
+        color: var(--vai-muted);
+        font-size: 13px;
+      }
+
+      .insight {
+        padding: 14px;
+        border-radius: 16px;
+        margin-bottom: 10px;
+        border: 1px solid var(--vai-line);
+        background: #fff;
+      }
+
+      .insight strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .subtabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .subtab {
+        padding: 9px 12px;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid var(--vai-line);
+        font-size: 13px;
+      }
+
+      .subtab.active {
+        border-color: #ffc9d3;
+        background: #fff5f7;
+        color: var(--vai-red);
+        font-weight: 700;
+      }
+
+      @media (max-width: 1280px) {
+        .grid.kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-2, .grid-3, .hero { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 840px) {
+        .shell { grid-template-columns: 1fr; }
+        .sidebar { display: none; }
+        .grid.kpis { grid-template-columns: 1fr 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>
+            <h1>VAI BI</h1>
+            <p>Mockup Comercial v2</p>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-title">Proceso</div>
+          <div class="nav-item active">Comercial</div>
+          <div class="nav-item">Cobranzas</div>
+          <div class="nav-item">Soporte</div>
+          <div class="nav-item">Instalaciones</div>
+          <div class="nav-item">Caja</div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-title">Solapas</div>
+          <div class="nav-item active">Resumen</div>
+          <div class="nav-item">KPI</div>
+          <div class="nav-item">Data</div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <section class="hero">
+          <div>
+            <h2>Comercial</h2>
+            <p>
+              Mockup propuesto para ordenar el proceso comercial con una jerarquía más clara:
+              primero el desempeño, luego la evolución y por último la exploración analítica.
+            </p>
+          </div>
+          <div class="hero-panel">
+            <div class="sub">Enfoque recomendado</div>
+            <div class="big">Resumen | KPI | Data</div>
+            <div class="sub">Con filtros globales y tablas filtrables por columna.</div>
+          </div>
+        </section>
+
+        <div class="toolbar">
+          <div class="tabs">
+            <div class="tab">Resumen</div>
+            <div class="tab active">KPI</div>
+            <div class="tab">Data</div>
+          </div>
+          <div class="filters">
+            <div class="chip">Año: 2026</div>
+            <div class="chip">Mes: Marzo</div>
+            <div class="chip">Comparar: 2025</div>
+            <div class="chip">Zona: Todas</div>
+            <div class="chip">Plan: Todos</div>
+          </div>
+        </div>
+
+        <div class="grid kpis">
+          <div class="card">
+            <div class="metric-label">Ventas del mes</div>
+            <div class="metric-value">57</div>
+            <div class="metric-meta">
+              <span>Objetivo 71</span>
+              <span class="pill warn">80%</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="metric-label">Leads generados</div>
+            <div class="metric-value">96</div>
+            <div class="metric-meta">
+              <span>Meta 120</span>
+              <span class="pill warn">80%</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="metric-label">Conversión lead vs venta</div>
+            <div class="metric-value">22,9%</div>
+            <div class="metric-meta">
+              <span>Objetivo 28%</span>
+              <span class="pill warn">Bajo meta</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="metric-label">Upselling cerrado</div>
+            <div class="metric-value">131</div>
+            <div class="metric-meta">
+              <span>Objetivo 22</span>
+              <span class="pill good">Sobre meta</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="metric-label">Bajas del mes</div>
+            <div class="metric-value">21</div>
+            <div class="metric-meta">
+              <span>Máximo 15</span>
+              <span class="pill bad">Desvío</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="metric-label">Conexiones activas</div>
+            <div class="metric-value">1.818</div>
+            <div class="metric-meta">
+              <span>Objetivo 1.892</span>
+              <span class="pill warn">96%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:16px;">
+          <div class="card">
+            <h3>Evolución mensual del proceso</h3>
+            <div class="subtabs">
+              <div class="subtab active">Ventas</div>
+              <div class="subtab">Leads</div>
+              <div class="subtab">Bajas</div>
+              <div class="subtab">Conversión</div>
+            </div>
+            <div class="chart tall">
+              <div class="chart-title">Ventas reales vs objetivo y comparación con año anterior</div>
+              <div class="bars">
+                <div class="bar-col">
+                  <div class="bar-pair">
+                    <div class="bar real" style="height:58%"></div>
+                    <div class="bar target" style="height:72%"></div>
+                    <div class="bar compare" style="height:49%"></div>
+                  </div>
+                  <div class="month">Ene</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-pair">
+                    <div class="bar real" style="height:60%"></div>
+                    <div class="bar target" style="height:72%"></div>
+                    <div class="bar compare" style="height:50%"></div>
+                  </div>
+                  <div class="month">Feb</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-pair">
+                    <div class="bar real" style="height:80%"></div>
+                    <div class="bar target" style="height:72%"></div>
+                    <div class="bar compare" style="height:93%"></div>
+                  </div>
+                  <div class="month">Mar</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-pair">
+                    <div class="bar real" style="height:0%"></div>
+                    <div class="bar target" style="height:72%"></div>
+                    <div class="bar compare" style="height:47%"></div>
+                  </div>
+                  <div class="month">Abr</div>
+                </div>
+              </div>
+              <div class="legend">
+                <span class="lg-real">Año actual</span>
+                <span class="lg-target">Objetivo</span>
+                <span class="lg-compare">Año anterior</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Lectura ejecutiva</h3>
+            <div class="insight">
+              <strong>Generación de demanda</strong>
+              Los leads del mes están por debajo del objetivo, y eso ya impacta en la conversión comercial.
+            </div>
+            <div class="insight">
+              <strong>Desempeño comercial</strong>
+              Las ventas siguen debajo del plan, pero el volumen de gestiones de upselling está muy por arriba de la meta.
+            </div>
+            <div class="insight">
+              <strong>Riesgo</strong>
+              Las bajas del mes están desalineadas y deberían mostrarse con más protagonismo como alerta del proceso.
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:16px;">
+          <div class="card">
+            <h3>Variable elegida</h3>
+            <div class="table-toolbar">
+              <div class="filter">Variable: Upselling</div>
+              <div class="filter">Comparar: 2025</div>
+            </div>
+            <div class="chart">
+              <div class="chart-title">Evolución mensual por estado</div>
+              <div class="stacked">
+                <div class="stack-col">
+                  <div class="segment seg-resolved" style="height:40%"></div>
+                  <div class="segment seg-follow" style="height:8%"></div>
+                  <div class="segment seg-progress" style="height:5%"></div>
+                  <div class="segment seg-pending" style="height:7%"></div>
+                  <div class="month" style="margin-top:8px;">Ene</div>
+                </div>
+                <div class="stack-col">
+                  <div class="segment seg-resolved" style="height:45%"></div>
+                  <div class="segment seg-follow" style="height:6%"></div>
+                  <div class="segment seg-pending" style="height:4%"></div>
+                  <div class="month" style="margin-top:8px;">Feb</div>
+                </div>
+                <div class="stack-col">
+                  <div class="segment seg-resolved" style="height:68%"></div>
+                  <div class="segment seg-follow" style="height:10%"></div>
+                  <div class="segment seg-progress" style="height:4%"></div>
+                  <div class="segment seg-pending" style="height:5%"></div>
+                  <div class="month" style="margin-top:8px;">Mar</div>
+                </div>
+              </div>
+              <div class="legend">
+                <span class="lg-pending">Pendiente</span>
+                <span class="lg-resolved">Resuelto</span>
+                <span class="lg-progress">En curso</span>
+                <span class="lg-follow">Seguimiento</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Comparación anual</h3>
+            <div class="chart">
+              <div class="chart-title">Upselling resuelto 2026 vs 2025</div>
+              <div class="bars">
+                <div class="bar-col">
+                  <div class="bar-pair">
+                    <div class="bar real" style="height:18%"></div>
+                    <div class="bar compare" style="height:0%"></div>
+                  </div>
+                  <div class="month">Ene</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-pair">
+                    <div class="bar real" style="height:22%"></div>
+                    <div class="bar compare" style="height:0%"></div>
+                  </div>
+                  <div class="month">Feb</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-pair">
+                    <div class="bar real" style="height:82%"></div>
+                    <div class="bar compare" style="height:0%"></div>
+                  </div>
+                  <div class="month">Mar</div>
+                </div>
+              </div>
+              <div class="legend">
+                <span class="lg-real">2026</span>
+                <span class="lg-compare">2025</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Alertas KPI</h3>
+            <div class="insight">
+              <strong>Leads bajo meta</strong>
+              96 vs 120
+            </div>
+            <div class="insight">
+              <strong>Conversión baja</strong>
+              22,9% vs 28%
+            </div>
+            <div class="insight">
+              <strong>Bajas elevadas</strong>
+              21 vs 15
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h3>Solapa Data</h3>
+          <p style="color:var(--vai-muted); margin-top:0;">
+            Esta solapa no repite KPI: abre el proceso para entender de dónde viene el resultado, qué segmentos explican el desempeño y qué cambió respecto al año anterior.
+          </p>
+
+          <div class="subtabs">
+            <div class="subtab active">Demanda</div>
+            <div class="subtab">Conversión</div>
+            <div class="subtab">Mix comercial</div>
+            <div class="subtab">Comparativos</div>
+            <div class="subtab">Detalle</div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card">
+              <h4>Leads por origen</h4>
+              <div class="chart">
+                <div class="chart-title">Qué canales están generando demanda</div>
+                <div class="bars">
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:74%"></div></div>
+                    <div class="month">Referidos</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:36%"></div></div>
+                    <div class="month">Meta Ads</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:28%"></div></div>
+                    <div class="month">Orgánico</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:18%"></div></div>
+                    <div class="month">Ex cliente</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4>Conversión por origen</h4>
+              <div class="chart">
+                <div class="chart-title">Qué fuente convierte mejor a venta</div>
+                <div class="bars">
+                  <div class="bar-col">
+                    <div class="bar-pair">
+                      <div class="bar real" style="height:62%"></div>
+                      <div class="bar compare" style="height:48%"></div>
+                    </div>
+                    <div class="month">Referidos</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair">
+                      <div class="bar real" style="height:29%"></div>
+                      <div class="bar compare" style="height:34%"></div>
+                    </div>
+                    <div class="month">Meta Ads</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair">
+                      <div class="bar real" style="height:38%"></div>
+                      <div class="bar compare" style="height:31%"></div>
+                    </div>
+                    <div class="month">Orgánico</div>
+                  </div>
+                </div>
+                <div class="legend">
+                  <span class="lg-real">Año actual</span>
+                  <span class="lg-compare">Año anterior</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4>Insights de demanda</h4>
+              <div class="insight">
+                <strong>Origen más sólido</strong>
+                Referidos sigue siendo el canal que más leads aporta y mejor convierte.
+              </div>
+              <div class="insight">
+                <strong>Canal a revisar</strong>
+                Meta Ads genera volumen, pero está por debajo de la conversión esperada.
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:16px;">
+            <div class="card">
+              <h4>Mix de planes vendidos</h4>
+              <div class="chart">
+                <div class="chart-title">Qué planes están empujando las ventas</div>
+                <div class="bars">
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:82%"></div></div>
+                    <div class="month">50 Mb</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:56%"></div></div>
+                    <div class="month">25 Mb</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:34%"></div></div>
+                    <div class="month">100 Mb</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair"><div class="bar real" style="height:12%"></div></div>
+                    <div class="month">Otros</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4>Mix tecnológico</h4>
+              <div class="chart">
+                <div class="chart-title">Cómo se reparte la base comercial</div>
+                <div class="bars">
+                  <div class="bar-col">
+                    <div class="bar-pair">
+                      <div class="bar real" style="height:76%"></div>
+                    </div>
+                    <div class="month">Fibra</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-pair">
+                      <div class="bar compare" style="height:42%"></div>
+                    </div>
+                    <div class="month">Wireless</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:16px;">
+            <div class="card">
+              <h4>Comparativos de negocio</h4>
+              <div class="table-toolbar">
+                <div class="filter">Métrica: Ventas / Leads / Conversión</div>
+                <div class="filter">Comparar contra: 2025</div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Métrica</th>
+                    <th>Mar 2026</th>
+                    <th>Mar 2025</th>
+                    <th>Variación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ventas</td>
+                    <td>57</td>
+                    <td>93</td>
+                    <td>-38,7%</td>
+                  </tr>
+                  <tr>
+                    <td>Upselling cerrado</td>
+                    <td>131</td>
+                    <td>13</td>
+                    <td>+907,7%</td>
+                  </tr>
+                  <tr>
+                    <td>Cambio de abono</td>
+                    <td>7</td>
+                    <td>11</td>
+                    <td>-36,4%</td>
+                  </tr>
+                  <tr>
+                    <td>Wireless a fibra</td>
+                    <td>0 cerrados</td>
+                    <td>2 cerrados</td>
+                    <td>-100%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card">
+              <h4>Ideas de insights</h4>
+              <div class="insight">
+                <strong>Promos que empujan volumen</strong>
+                Identificar qué campañas explican el salto en upselling frente al año anterior.
+              </div>
+              <div class="insight">
+                <strong>Canales que convierten mejor</strong>
+                Ver si el problema es falta de leads o una caída en la eficiencia comercial.
+              </div>
+              <div class="insight">
+                <strong>Planes que ganan share</strong>
+                Detectar si el crecimiento está concentrado en 25 Mb, 50 Mb o migraciones a fibra.
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:16px;">
+            <h4>Detalle analítico filtrable</h4>
+            <div class="table-toolbar">
+              <div class="filter">Buscar cliente</div>
+              <div class="filter">Origen lead</div>
+              <div class="filter">Plan</div>
+              <div class="filter">Tecnología</div>
+              <div class="filter">Mes</div>
+              <div class="filter">Año</div>
+              <div class="filter">Responsable</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente / gestión</th>
+                  <th>Origen</th>
+                  <th>Plan / categoría</th>
+                  <th>Tecnología</th>
+                  <th>Estado</th>
+                  <th>Mes</th>
+                  <th>Responsable</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Promo 50 megas</td>
+                  <td>Campaña</td>
+                  <td>Upselling</td>
+                  <td>Fibra</td>
+                  <td>Resuelto</td>
+                  <td>Mar 2026</td>
+                  <td>Comercial</td>
+                </tr>
+                <tr>
+                  <td>Cambio de abono</td>
+                  <td>Cliente activo</td>
+                  <td>Cambio de abono</td>
+                  <td>Fibra</td>
+                  <td>Resuelto</td>
+                  <td>Mar 2026</td>
+                  <td>Usuario 108</td>
+                </tr>
+                <tr>
+                  <td>Wireless a Fibra</td>
+                  <td>Base wireless</td>
+                  <td>Migración</td>
+                  <td>Wireless → Fibra</td>
+                  <td>Pendiente</td>
+                  <td>Mar 2026</td>
+                  <td>Usuario 107</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+export const goals = {
+  year: 2026,
+  directorio: {
+    activeConnections: 2227,
+    salesYtd: 213,
+    churnYtd: 45,
+    billingMonth: 52977000,
+    arpu: 24516,
+  },
+  comercial: {
+    leadsMonth: 120,
+    leadConversion: 28,
+    salesMonth: 71,
+    dropsMonth: 15,
+    upsellingMonth: 22,
+  },
+  cobranzas: {
+    collectionRate: 95,
+  },
+  soporte: {
+    closureRate: 85,
+    unassignedMax: 25,
+    slaHours: 48,
+  },
+  plantaExterior: {
+    slaBusinessDays: 7,
+  },
+  monthly: [
+    {
+      year: 2026,
+      month: 1,
+      label: 'Ene',
+      activeConnectionsTarget: 1820,
+      salesTarget: 71,
+      churnTarget: 15,
+      billingTarget: 50500000,
+      upsellingTarget: 22,
+    },
+    {
+      year: 2026,
+      month: 2,
+      label: 'Feb',
+      activeConnectionsTarget: 1856,
+      salesTarget: 71,
+      churnTarget: 15,
+      billingTarget: 51800000,
+      upsellingTarget: 22,
+    },
+    {
+      year: 2026,
+      month: 3,
+      label: 'Mar',
+      activeConnectionsTarget: 1892,
+      salesTarget: 71,
+      churnTarget: 15,
+      billingTarget: 52977000,
+      upsellingTarget: 22,
+    },
+  ],
+}

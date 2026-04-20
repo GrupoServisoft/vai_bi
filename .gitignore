@@ -1,0 +1,13 @@
+node_modules/
+apps/web/node_modules/
+apps/api/node_modules/
+apps/web/dist/
+logs/
+*.log
+.env
+apps/api/.env
+.DS_Store
+npm-debug.log*
+tmp-goals.xlsx
+tmp-goals.zip
+tmp-goals-unzipped/
