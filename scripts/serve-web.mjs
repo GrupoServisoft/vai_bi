@@ -1,6 +1,6 @@
 import { createReadStream, existsSync } from 'node:fs'
 import { stat, readFile } from 'node:fs/promises'
-import { createServer } from 'node:http'
+import { createServer, request as httpRequest } from 'node:http'
 import { dirname, extname, join, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -9,6 +9,8 @@ const repoRoot = normalize(join(dirname(__filename), '..'))
 const distDir = join(repoRoot, 'apps', 'web', 'dist')
 const host = process.env.WEB_HOST || '127.0.0.1'
 const port = Number(process.env.WEB_PORT || 4185)
+const apiHost = process.env.API_HOST || '127.0.0.1'
+const apiPort = Number(process.env.API_PORT || 4100)
 
 const mimeTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -33,6 +35,12 @@ const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url || '/', `http://${req.headers.host || `${host}:${port}`}`)
     const pathname = decodeURIComponent(url.pathname)
+
+    if (pathname.startsWith('/api/')) {
+      await proxyApiRequest(req, res, url)
+      return
+    }
+
     const safePath = pathname === '/' ? '/index.html' : pathname
     const requestedPath = normalize(join(distDir, safePath))
     const withinDist = requestedPath.startsWith(distDir)
@@ -71,6 +79,28 @@ const server = createServer(async (req, res) => {
 server.listen(port, host, () => {
   console.log(`VAI BI web running on http://${host}:${port}`)
 })
+
+function proxyApiRequest(req, res, url) {
+  return new Promise((resolve, reject) => {
+    const proxyRequest = httpRequest({
+      hostname: apiHost,
+      port: apiPort,
+      path: `${url.pathname}${url.search}`,
+      method: req.method,
+      headers: {
+        ...req.headers,
+        host: `${apiHost}:${apiPort}`,
+      },
+    }, (proxyResponse) => {
+      res.writeHead(proxyResponse.statusCode || 502, proxyResponse.headers)
+      proxyResponse.pipe(res)
+      proxyResponse.on('end', resolve)
+    })
+
+    proxyRequest.on('error', reject)
+    req.pipe(proxyRequest)
+  })
+}
 
 async function resolvePath(requestedPath) {
   const resolvedStat = await stat(requestedPath).catch(() => null)

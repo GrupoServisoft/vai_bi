@@ -777,12 +777,12 @@ export async function getSoporteRecurrence(from, until) {
     customers: rows.filter((row) => row.ticketCount >= bucket.min && row.ticketCount <= bucket.max).length,
   }))
 
-  const criticalCustomers = await Promise.all(
+  const recurringCustomers = await Promise.all(
     rows
-      .filter((row) => row.ticketCount >= 3)
+      .filter((row) => row.ticketCount >= 2)
       .map(async (row) => ({
         ...row,
-        customerName: await getCustomerDisplayName(row.customerId),
+        ...(await getCustomerSupportProfile(row.customerId)),
       }))
   )
 
@@ -795,7 +795,7 @@ export async function getSoporteRecurrence(from, until) {
     totalCustomers: rows.length,
     totalTickets: reclamoTickets.length,
     buckets,
-    criticalCustomers,
+    recurringCustomers,
   }
 }
 
@@ -1272,6 +1272,62 @@ async function getCustomerDisplayName(customerId) {
   }
 }
 
+async function getCustomerSupportProfile(customerId) {
+  if (!customerId) {
+    return {
+      customerName: null,
+      serviceStartDate: null,
+      blockedByLackOfPayment: null,
+    }
+  }
+
+  const cached = customerSupportProfileCache.get(customerId)
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.data
+  }
+
+  try {
+    const response = await ispbrainGet(`/customers/${customerId}`)
+    const customer = response?.data || response
+    const connections = Array.isArray(customer?.connections) ? customer.connections : []
+    const serviceStartDate = resolveServiceStartDate(customer, connections)
+    const hasDisabledConnection = connections.some((connection) => connection?.enabled === false && !connection?.archived && !connection?.deleted)
+    const hasPositiveBalance = Number(customer?.saldo || 0) > 0
+
+    const data = {
+      customerName: customer?.name || customer?.fantasy_name || null,
+      serviceStartDate,
+      blockedByLackOfPayment: hasDisabledConnection && hasPositiveBalance,
+    }
+
+    customerSupportProfileCache.set(customerId, {
+      expiresAt: Date.now() + 10 * 60 * 1000,
+      data,
+    })
+
+    return data
+  } catch (_error) {
+    return {
+      customerName: null,
+      serviceStartDate: null,
+      blockedByLackOfPayment: null,
+    }
+  }
+}
+
+function resolveServiceStartDate(customer, connections) {
+  const candidates = [
+    customer?.created,
+    ...connections.flatMap((connection) => [connection?.created, connection?.technical_created_date]),
+  ]
+    .filter(Boolean)
+    .map((value) => new Date(value))
+    .filter((date) => !Number.isNaN(date.getTime()))
+    .sort((a, b) => a - b)
+
+  return candidates[0]?.toISOString() || null
+}
+
 async function getPlantaExteriorTickets() {
   const tickets = await getAllTickets({ 'filter[deleted]': 0 })
   return tickets.filter((ticket) => PLANTA_EXTERIOR_CATEGORY_SET.has(Number(ticket.ticket_category_id)))
@@ -1678,3 +1734,4 @@ const LOCAL_PAYMENT_METHODS = ['Efectivo', 'Tarjeta de D√©bito', 'Tarjeta de Cr√
 const WEEK_LABELS = ['1ra semana', '2da semana', '3ra semana', '4ta semana', '5ta semana']
 const TIME_SLOT_LABELS = ['08-10', '10-12', '12-14', '14-16', '16-18', '18-20', 'Otro']
 const paymentMethodMonthCache = new Map()
+const customerSupportProfileCache = new Map()

@@ -1920,13 +1920,15 @@ function SoportePage() {
     ],
   }), [recurrenceBuckets])
 
-  const criticalCustomersRows = (recurrence?.data?.criticalCustomers || []).map((row) => ({
+  const recurringCustomersRows = (recurrence?.data?.recurringCustomers || []).map((row) => ({
     key: `${row.customerId}-${row.lastTicket}`,
     cliente: row.customerId,
     nombre: row.customerName,
     tickets: row.ticketCount,
     primerTicket: row.firstTicket,
     ultimoTicket: row.lastTicket,
+    inicioServicio: row.serviceStartDate,
+    bloqueadoFaltaPago: row.blockedByLackOfPayment,
     estados: row.statuses,
     conexiones: row.connections,
     alerta: row.severity,
@@ -2082,6 +2084,41 @@ function SoportePage() {
       children: (
         <>
           <Row gutter={[16, 16]}>
+            <Col xs={24}>
+              <Card
+                title="Recurrencia de reclamos por cliente"
+                extra={(
+                  <div className="field-row">
+                    <Input type="date" value={recurrenceFrom} onChange={(event) => setRecurrenceFrom(event.target.value)} style={{ width: 160 }} />
+                    <Input type="date" value={recurrenceUntil} onChange={(event) => setRecurrenceUntil(event.target.value)} style={{ width: 160 }} />
+                  </div>
+                )}
+              >
+                {loadingRecurrence ? <CenteredSpinner /> : null}
+                <Table
+                  dataSource={recurringCustomersRows}
+                  pagination={{ pageSize: 8 }}
+                  scroll={{ x: 1650 }}
+                  columns={[
+                    { title: 'Cliente', dataIndex: 'cliente', key: 'cliente', width: 120, render: formatOptionalNumber, sorter: numericSorter('cliente') },
+                    { title: 'Nombre', dataIndex: 'nombre', key: 'nombre', width: 260, filters: buildFilters(recurringCustomersRows, 'nombre'), onFilter: (value, record) => record.nombre === value, render: (value) => value || '-' },
+                    { title: 'Reclamos', dataIndex: 'tickets', key: 'tickets', width: 110, render: formatNumber, sorter: numericSorter('tickets') },
+                    { title: 'Primer ticket', dataIndex: 'primerTicket', key: 'primerTicket', width: 145, render: formatDateShort, sorter: (a, b) => new Date(a.primerTicket) - new Date(b.primerTicket) },
+                    { title: 'Ultimo ticket', dataIndex: 'ultimoTicket', key: 'ultimoTicket', width: 145, render: formatDateShort, sorter: (a, b) => new Date(a.ultimoTicket) - new Date(b.ultimoTicket) },
+                    { title: 'Inicio servicio', dataIndex: 'inicioServicio', key: 'inicioServicio', width: 150, render: formatDateShort, sorter: (a, b) => new Date(a.inicioServicio || 0) - new Date(b.inicioServicio || 0) },
+                    { title: 'Bloq. falta pago', dataIndex: 'bloqueadoFaltaPago', key: 'bloqueadoFaltaPago', width: 160, filters: [{ text: 'Si', value: 'Si' }, { text: 'No', value: 'No' }, { text: 'Sin dato', value: 'Sin dato' }], onFilter: (value, record) => formatBlockedStatus(record.bloqueadoFaltaPago) === value, render: (value) => <Tag color={value === true ? 'red' : value === false ? 'green' : 'default'}>{formatBlockedStatus(value)}</Tag> },
+                    { title: 'Conexiones', dataIndex: 'conexiones', key: 'conexiones', width: 120, render: formatNumber, sorter: numericSorter('conexiones') },
+                    { title: 'Estados', dataIndex: 'estados', key: 'estados', width: 220 },
+                    { title: 'Alerta', dataIndex: 'alerta', key: 'alerta', width: 120, filters: buildFilters(recurringCustomersRows, 'alerta'), onFilter: (value, record) => record.alerta === value, render: (value) => <Tag color={value === 'Critico' ? 'red' : value === 'Atencion' ? 'orange' : 'blue'}>{value}</Tag> },
+                  ]}
+                />
+                <div style={{ marginTop: 16 }}>
+                  <div className="chart-box"><Bar data={recurrenceChart} options={baseChartOptions} /></div>
+                </div>
+              </Card>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]}>
             <Col xs={24} xl={12}>
               <Card title="Demora promedio por mes">
                 <div className="chart-box"><Line data={delayChart} options={baseChartOptions} /></div>
@@ -2160,43 +2197,6 @@ function SoportePage() {
                   pagination={{ pageSize: 8 }}
                   scroll={{ x: 980 }}
                 />
-              </Card>
-            </Col>
-          </Row>
-          <Row gutter={[16, 16]}>
-            <Col xs={24}>
-              <Card
-                title="Recurrencia de reclamos por cliente"
-                extra={(
-                  <div className="field-row">
-                    <Input type="date" value={recurrenceFrom} onChange={(event) => setRecurrenceFrom(event.target.value)} style={{ width: 160 }} />
-                    <Input type="date" value={recurrenceUntil} onChange={(event) => setRecurrenceUntil(event.target.value)} style={{ width: 160 }} />
-                  </div>
-                )}
-              >
-                {loadingRecurrence ? <CenteredSpinner /> : null}
-                <Row gutter={[16, 16]}>
-                  <Col xs={24} xl={10}>
-                    <div className="chart-box"><Bar data={recurrenceChart} options={baseChartOptions} /></div>
-                  </Col>
-                  <Col xs={24} xl={14}>
-                    <Table
-                      dataSource={criticalCustomersRows}
-                      pagination={{ pageSize: 6 }}
-                      scroll={{ x: 980 }}
-                      columns={[
-                        { title: 'Cliente', dataIndex: 'cliente', key: 'cliente', render: formatOptionalNumber, sorter: numericSorter('cliente') },
-                        { title: 'Nombre', dataIndex: 'nombre', key: 'nombre', filters: buildFilters(criticalCustomersRows, 'nombre'), onFilter: (value, record) => record.nombre === value, render: (value) => value || '-' },
-                        { title: 'Reclamos', dataIndex: 'tickets', key: 'tickets', render: formatNumber, sorter: numericSorter('tickets') },
-                        { title: 'Primer ticket', dataIndex: 'primerTicket', key: 'primerTicket', render: formatDateShort, sorter: (a, b) => new Date(a.primerTicket) - new Date(b.primerTicket) },
-                        { title: 'Ultimo ticket', dataIndex: 'ultimoTicket', key: 'ultimoTicket', render: formatDateShort, sorter: (a, b) => new Date(a.ultimoTicket) - new Date(b.ultimoTicket) },
-                        { title: 'Conexiones', dataIndex: 'conexiones', key: 'conexiones', render: formatNumber, sorter: numericSorter('conexiones') },
-                        { title: 'Estados', dataIndex: 'estados', key: 'estados' },
-                        { title: 'Alerta', dataIndex: 'alerta', key: 'alerta', filters: buildFilters(criticalCustomersRows, 'alerta'), onFilter: (value, record) => record.alerta === value, render: (value) => <Tag color={value === 'Critico' ? 'red' : 'orange'}>{value}</Tag> },
-                      ]}
-                    />
-                  </Col>
-                </Row>
               </Card>
             </Col>
           </Row>
@@ -2430,6 +2430,12 @@ function formatSignedPercent(value) {
   const numeric = Math.round(Number(value || 0) * 10) / 10
   if (numeric === 0) return '0%'
   return `${numeric > 0 ? '+' : ''}${numeric}%`
+}
+
+function formatBlockedStatus(value) {
+  if (value === true) return 'Si'
+  if (value === false) return 'No'
+  return 'Sin dato'
 }
 
 function formatProgressPercent(value) {
